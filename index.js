@@ -30,6 +30,7 @@ const client = new MongoClient(uri, {
 });
 
 const servicesCollection = client.db("carServicing").collection("services");
+const bookingCollection = client.db("carServicing").collection("bookings");
 
 async function run() {
     try {
@@ -39,21 +40,82 @@ async function run() {
         const database = client.db("sample_mflix");
         const movies = database.collection("movies");
 
+
         // GET ALL SERVICES 
-        app.get('/services', async(req, res)=>{
+        app.get('/services', async (req, res) => {
             const cursor = servicesCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
-        // GET SINGLE SERVICE FOR SERVICE DETAILS SINGLE PAGE
 
+        // GET SINGLE SERVICE FOR SERVICE DETAILS SINGLE PAGE
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
 
             const result = await servicesCollection.findOne(query);
             res.send(result)
+        })
+
+
+        // LOAD A SERVICE ON CHECKOUT PAGE WHEN CLICK ON BOOK NOW BUTTON
+        app.get('/checkout/service/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+
+            const options = {
+                projection: { title: 1, img: 1, price: 1, service_id: 1 },
+            };
+
+            const result = await servicesCollection.findOne(query, options);
+            res.send(result);
+        })
+
+        // BOOKING
+
+        // get booking item by email or if not email exist then get all booking
+        app.get('/bookings', async (req, res) => {
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+
+            const result = await bookingCollection.find(query).toArray();
+            res.send(result)
+        })
+
+        // add booking item when customer booked from the checkout page
+        app.post('/bookings', async (req, res) => {
+            const newBooking = req.body;
+            const result = await bookingCollection.insertOne(newBooking);
+            res.send(result)
+        })
+
+
+        // Delete a booking item when customer remove from the list 
+        app.delete('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await bookingCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+        // Update/confirm booking from the customer booking page
+        app.patch('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const filter = { _id: new ObjectId(id) };
+            
+            const updatedConfirm = {
+                $set: {
+                    status: req.body.status
+                },
+            };
+
+            const result = await bookingCollection.updateOne(filter, updatedConfirm);
+            res.send(result);
         })
 
 
@@ -64,6 +126,4 @@ async function run() {
     }
 }
 run().catch(console.log);
-
-
 
