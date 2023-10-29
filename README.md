@@ -22,18 +22,18 @@ app.use(cors({
 
 
 
-### Client side :
+### Client side code :
 - Axios setting
 ```JavaScript
 const jwtUser = { email: user?.email }
-        axios.post('http://localhost:5000/jwt', jwtUser, { withCredentials: true })
-            .then(res => console.log(res.data))
+      axios.post('http://localhost:5000/jwt', jwtUser, { withCredentials: true })
+        .then(res => console.log(res.data))
 ```
 
 
 
 
-#### Full Server side code for JWT
+#### Server side code for JWT
 ```JavaScript
 const jwt = require('jsonwebtoken');
 

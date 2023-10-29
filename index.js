@@ -60,7 +60,7 @@ async function run() {
                 .send({ success: true })
         })
 
-        
+
         /* AUTH RELATED API END */
 
 
