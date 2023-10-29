@@ -22,8 +22,9 @@ app.use(cors({
 
 
 
-### Client side code :
-- Axios setting
+#### Client side code :
+- axios setting
+- axios set withCredentials: true (it's for all method to send client browser cookie to server API like post, get, put fetch etc etc.... )
 ```JavaScript
 const jwtUser = { email: user?.email }
       axios.post('http://localhost:5000/jwt', jwtUser, { withCredentials: true })
@@ -36,11 +37,15 @@ const jwtUser = { email: user?.email }
 #### Server side code for JWT
 ```JavaScript
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
 
 app.use(cors({
     origin: ['http://localhost:5173'],
     credentials: true
 }));
+app.use(cookieParser());
+
 
 app.post('/jwt', (req, res) => {
     const user = req.body;

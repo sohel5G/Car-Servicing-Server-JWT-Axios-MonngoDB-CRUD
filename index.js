@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
@@ -13,6 +14,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
     res.send('Car servicing server is running');
@@ -112,6 +114,9 @@ async function run() {
 
         // get booking item by email or if not email exist then get all booking
         app.get('/bookings', async (req, res) => {
+
+            console.log('Token get from frontend', req.cookies.token);
+
             let query = {};
             if (req.query?.email) {
                 query = { email: req.query.email }
