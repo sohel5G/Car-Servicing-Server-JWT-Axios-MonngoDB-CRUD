@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-require('dotenv').config()
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -11,14 +12,15 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Car servicing server is running')
+    res.send('Car servicing server is running');
 })
 
 app.listen(port, () => {
-    console.log(`Car servicing server is running on PORT: ${port}`)
+    console.log(`Car servicing server is running on PORT: ${port}`);
 })
 
 
+// MONGODB CONNECTIONS 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.qbl5b3c.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
@@ -37,9 +39,25 @@ async function run() {
 
         // await client.connect();
 
-        const database = client.db("sample_mflix");
-        const movies = database.collection("movies");
 
+        /* AUTH RELATED API */
+        app.post('/jwt', (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, 'secret', { expiresIn: '1h' })
+            res.send(token);
+        })
+
+
+
+
+        /* AUTH RELATED API END */
+
+
+
+
+
+
+        /* SERVICES RELATED API */
 
         // GET ALL SERVICES 
         app.get('/services', async (req, res) => {
@@ -71,6 +89,13 @@ async function run() {
             const result = await servicesCollection.findOne(query, options);
             res.send(result);
         })
+
+
+
+
+
+
+
 
         // BOOKING
 
@@ -107,7 +132,7 @@ async function run() {
             const id = req.params.id;
 
             const filter = { _id: new ObjectId(id) };
-            
+
             const updatedConfirm = {
                 $set: {
                     status: req.body.status
