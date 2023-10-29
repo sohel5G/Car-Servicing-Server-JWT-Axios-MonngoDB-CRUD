@@ -1,5 +1,6 @@
 ### JWT token generate server side steps : 
 - Install jsonwebtoken
+- Install Cookie Parser
 - jwt.sign (payload, secret, {expiresIn})
 - send to client side (res.send(token))
 
@@ -41,7 +42,7 @@ const cookieParser = require('cookie-parser');
 
 
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
     credentials: true
 }));
 app.use(cookieParser());
@@ -63,12 +64,36 @@ app.post('/jwt', (req, res) => {
 ```
 
 
+#### For all API lke this below : 
+- Client Side 
+```JavaScript
+axios.get(`http://localhost:5000/bookings?email=${user.email}`, { withCredentials: true })
+    .then((res) => setBookings(res.data));
+```
+
+- Server Side
+```JavaScript
+app.get('/bookings', async (req, res) => {
+
+            console.log('Token get from frontend', req.cookies.token);
+
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+
+            const result = await bookingCollection.find(query).toArray();
+            res.send(result)
+        })
+```
 
 
 
 
 
-### make hexadecimal number node js terminal : 
+
+
+### make hexadecimal number node js terminal command : 
 ```JavaScript
 node
 ```
