@@ -90,6 +90,60 @@ app.get('/bookings', async (req, res) => {
 
 
 
+####  Custom middleware & verify token to provide correct user data
+```JavaScript
+/* Custom made middlewares */
+const logger = async (req, res, next) => {
+    console.log('called', req.host, req.originalUrl)
+    next()
+}
+
+const verifyToken = async (req, res, next) => {
+    const token = req.cookies?.token;
+    console.log('value of token in middleware', token);
+
+    if (!token) {
+        return res.status(401).send({ message: 'Unauthorized' })
+    }
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+            console.log(err);
+            return res.status(401).send({ message: 'Unauthorized' })
+        }
+        // console.log('value in the token decoded', decoded);
+        req.user = decoded
+        next()
+    })
+}
+/* Custom made middlewares End */
+
+
+ app.get('/bookings', logger, verifyToken, async (req, res) => {
+
+    // console.log('Token get from frontend', req.cookies.token);
+    // console.log('user in the valid token', req.user);
+
+    /*token verify */
+    if( req.query.email !==  req.user.email){
+        return res.status(403).send({message: 'Forbidden access'})
+    }/*token verify end */
+
+    let query = {};
+    if (req.query?.email) {
+        query = { email: req.query.email }
+    }
+
+    const result = await bookingCollection.find(query).toArray();
+    res.send(result)
+})
+
+```
+
+
+
+
+
 
 
 
