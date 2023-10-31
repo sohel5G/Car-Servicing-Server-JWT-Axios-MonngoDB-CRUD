@@ -148,8 +148,8 @@ async function run() {
             // console.log('user in the valid token', req.user);
 
             /*token verify */
-            if( req.query.email !==  req.user.email){
-                return res.status(403).send({message: 'Forbidden access'})
+            if (req.query.email !== req.user.email) {
+                return res.status(403).send({ message: 'Forbidden access' })
             }/*token verify end */
 
             let query = {};
