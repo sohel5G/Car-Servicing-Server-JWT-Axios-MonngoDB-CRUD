@@ -147,7 +147,7 @@ const verifyToken = async (req, res, next) => {
 
 
 
-### make hexadecimal number node js terminal command : 
+#### make hexadecimal number node js terminal command : 
 ```JavaScript
 node
 ```
@@ -158,3 +158,12 @@ require('crypto').randomBytes(64)
 require('crypto').randomBytes(64).toString('hex')
 ```
 
+
+
+
+
+#### Server side deploy
+- Vercel config file 
+- If you use cookies in cross side: use cros for your production url
+- vercel --prod
+- after deploy set environment variable
