@@ -164,6 +164,6 @@ require('crypto').randomBytes(64).toString('hex')
 
 #### Server side deploy
 - Vercel config file 
-- If you use cookies in cross side: use cros for your production url
+- If you use cookies in cross side: use Cros for your production url
 - vercel --prod
 - after deploy set environment variable

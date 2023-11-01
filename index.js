@@ -11,6 +11,7 @@ const port = process.env.PORT || 5000;
 
 app.use(cors({
     origin: ['https://car-servicing-d655d.web.app', 'https://car-servicing-d655d.firebaseapp.com'],
+    // origin: ['http://localhost:5173'],
     credentials: true,
 }));
 app.use(express.json());
@@ -68,6 +69,7 @@ const client = new MongoClient(uri, {
 
 const servicesCollection = client.db("carServicing").collection("services");
 const bookingCollection = client.db("carServicing").collection("bookings");
+const productsCollection = client.db("carServicing").collection("products");
 
 async function run() {
     try {
@@ -87,7 +89,8 @@ async function run() {
             res
                 .cookie('token', token, {
                     httpOnly: true,
-                    secure: false
+                    secure: true,
+                    sameSite: 'none'
                 })
                 .send({ success: true })
         })
@@ -96,6 +99,15 @@ async function run() {
         /* AUTH RELATED API END */
 
 
+
+        // products API
+
+        app.get('/products', async(req, res) => {
+            const products = await productsCollection.find().toArray()
+            res.send(products)
+        })
+
+        // Products API end
 
 
 
