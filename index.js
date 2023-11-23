@@ -1,3 +1,8 @@
+// --------------------------
+// https://car-servicing-server-zeta.vercel.app
+// http://localhost:5000
+//---------------------------
+
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
@@ -10,8 +15,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors({
-    origin: ['https://car-servicing-d655d.web.app', 'https://car-servicing-d655d.firebaseapp.com'],
-    // origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'https://car-servicing-d655d.web.app', 'https://car-servicing-d655d.firebaseapp.com'],
     credentials: true,
 }));
 app.use(express.json());
@@ -102,7 +106,7 @@ async function run() {
 
         // products API
 
-        app.get('/products', async(req, res) => {
+        app.get('/products', async (req, res) => {
             const products = await productsCollection.find().toArray()
             res.send(products)
         })
